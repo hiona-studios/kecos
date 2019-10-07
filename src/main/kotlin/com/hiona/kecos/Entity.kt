@@ -1,22 +1,24 @@
 package com.hiona.kecos
 
+
 class Entity {
 
-    private val components = mutableMapOf<Component<*>, Any>()
+    private val components = mutableListOf<Component<*>>()
 
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(component: Component<T>): T? = components[component] as T?
+    operator fun <T> get(component: Component<T>): T? = component at this
 
     operator fun <T> set(component: Component<T>, value: T?) {
-        when (value) {
-            null -> components.remove(component)
-            else -> components[component] = value as Any
-        }
+        component[this] = value
     }
 
-    fun remove(component: Component<*>) = components.remove(component)
+    fun <T> remove(component: Component<T>) {
+        component[this] = null
+    }
 
     override fun toString(): String {
-        return "${hashCode()} $components"
+        val componentsStr = components.fold("") { str, comp -> "$str, ${comp::class.java.simpleName} = ${comp at this}" }
+        return "${hashCode()} { $componentsStr }"
     }
 }
+
+fun entity(init: Entity.() -> Unit) = Entity().apply { init(this) }

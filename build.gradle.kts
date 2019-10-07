@@ -1,11 +1,11 @@
 plugins {
     `build-scan`
     `maven-publish`
-    kotlin("jvm") version "1.3.20"
+    kotlin("jvm") version "1.3.50"
 }
 
 group = "com.hionastudios"
-version = "0.0.1"
+version = "0.0.2"
 
 repositories {
     jcenter()
