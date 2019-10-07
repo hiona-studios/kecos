@@ -1,6 +1,6 @@
 package com.hiona.kecos
 
-abstract class Component<T> {
+class Component<T> {
 
     private val values = mutableMapOf<Entity, T>()
 
