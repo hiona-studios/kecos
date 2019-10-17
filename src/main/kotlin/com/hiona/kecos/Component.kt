@@ -24,11 +24,28 @@ class Component<T> {
     }
 
     fun forEach(action: (Entity, T) -> Unit) {
-        values.forEach(action)
+        values.asSequence().forEach{ (e, v) -> action(e, v) }
     }
 
     fun <R> map(transform: (Entity, T) -> R): List<R> = values.map { (e, v) -> transform(e, v) }
 
 }
 
-typealias Tag = Component<Unit>
+class TagComponent {
+    private val entities = mutableSetOf<Entity>()
+
+    fun tag(entity: Entity) {
+        entities.add(entity)
+    }
+
+    fun untag(entity: Entity) {
+        entities.remove(entity)
+    }
+
+    operator fun contains(entity: Entity) = entity in entities
+
+    fun forEach(action: (Entity) -> Unit) {
+        entities.forEach(action)
+    }
+    fun <R> map(transform: (Entity) -> R): List<R> = entities.map(transform)
+}
