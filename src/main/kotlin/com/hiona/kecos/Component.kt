@@ -1,6 +1,9 @@
 package com.hiona.kecos
 
-class Component<T> {
+import kotlinx.serialization.Serializable
+
+@Serializable
+class Component<T> : Iterable<Map.Entry<Entity, T>> {
 
     private val values = mutableMapOf<Entity, T>()
 
@@ -15,23 +18,18 @@ class Component<T> {
 
     infix fun at(entity: Entity): T? = values[entity]
 
-    fun forEachEntity(action: (Entity) -> Unit) {
-        values.keys.forEach(action)
-    }
+    override fun iterator(): Iterator<Map.Entry<Entity, T>> = values.iterator()
 
-    fun forEachValue(action: (T) -> Unit) {
-        values.values.forEach(action)
-    }
+    fun forEach(action: (Entity, T) -> Unit) = values.forEach(action)
 
-    fun forEach(action: (Entity, T) -> Unit) {
-        values.asSequence().forEach{ (e, v) -> action(e, v) }
-    }
+    fun forEachEntity(action: (Entity) -> Unit) = values.keys.forEach(action)
 
-    fun <R> map(transform: (Entity, T) -> R): List<R> = values.map { (e, v) -> transform(e, v) }
+    fun forEachValue(action: (T) -> Unit) = values.values.forEach(action)
 
 }
 
-class TagComponent {
+@Serializable
+class TagComponent : Iterable<Entity> {
     private val entities = mutableSetOf<Entity>()
 
     fun tag(entity: Entity) {
@@ -44,8 +42,5 @@ class TagComponent {
 
     operator fun contains(entity: Entity) = entity in entities
 
-    fun forEach(action: (Entity) -> Unit) {
-        entities.forEach(action)
-    }
-    fun <R> map(transform: (Entity) -> R): List<R> = entities.map(transform)
+    override fun iterator() = entities.iterator()
 }

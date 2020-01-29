@@ -1,11 +1,11 @@
 plugins {
-    `build-scan`
     `maven-publish`
-    kotlin("jvm") version "1.3.50"
+    kotlin("jvm") version "1.3.61"
+    id("kotlinx-serialization") version "1.3.0"
 }
 
 group = "com.hionastudios"
-version = "0.0.4"
+version = "0.0.5"
 
 repositories {
     jcenter()
@@ -13,20 +13,12 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.0")
 
     // Use the Kotlin test library.
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
 }
-
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
-}
-
 
 publishing {
     publications {
