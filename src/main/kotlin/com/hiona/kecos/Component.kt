@@ -26,6 +26,7 @@ class Component<T> : Iterable<Map.Entry<Entity, T>> {
 
     fun forEachValue(action: (T) -> Unit) = values.values.forEach(action)
 
+    fun clear() = values.clear()
 }
 
 @Serializable

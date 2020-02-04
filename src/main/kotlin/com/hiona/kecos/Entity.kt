@@ -1,11 +1,12 @@
 package com.hiona.kecos
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.IntDescriptor
+import kotlin.math.max
 
+//TODO use inline once it is serializable
 @Serializable
-class Entity {
-
-    val id = nextId++
+class Entity private constructor(val id: Int) {
 
     operator fun <T> get(component: Component<T>): T? = component[this]
 
@@ -26,9 +27,24 @@ class Entity {
         else -> false
     }
 
-    companion object {
+    @Serializer(forClass = Entity::class)
+    companion object : KSerializer<Entity> {
+
         private var nextId = 0
+
+        private val instances = mutableMapOf<Int, Entity>()
+
+        internal fun create(id: Int = nextId++) = instances[id] ?: Entity(id).also {
+            instances[id] = it
+            nextId = max(nextId, id)
+        }
+
+        override val descriptor: SerialDescriptor = IntDescriptor.withName("Entity")
+
+        override fun serialize(encoder: Encoder, obj: Entity) = encoder.encodeInt(obj.id)
+
+        override fun deserialize(decoder: Decoder): Entity = create(decoder.decodeInt())
     }
 }
 
-fun entity(init: Entity.() -> Unit) = Entity().apply { init(this) }
+fun entity(init: Entity.() -> Unit) = Entity.create().apply { init(this) }

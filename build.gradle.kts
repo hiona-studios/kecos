@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `maven-publish`
     kotlin("jvm") version "1.3.61"
@@ -13,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0")
 
     // Use the Kotlin test library.
     testImplementation(kotlin("test"))
@@ -31,4 +33,8 @@ publishing {
             url = uri("$buildDir/repository")
         }
     }
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    freeCompilerArgs = listOf("-Xinline-classes")
 }
